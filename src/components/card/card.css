@@ -1,0 +1,16 @@
+.word {
+    height: 100px;
+    text-align: justify;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.btn-delete{
+    background-color: #D35400 !important;
+}
+
+.btn-edit{
+    background-color: #1C2833 !important;
+    color: #FFFFFF !important;
+}
+
