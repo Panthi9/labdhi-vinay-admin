@@ -7,7 +7,7 @@ import App from './App';
 import authReducer from './redux/reducers/authReducer';
 import reportWebVitals from './reportWebVitals';
 
-let store = createStore(authReducer);
+const store = createStore(authReducer);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
