@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import { getFirestore, collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from "firebase/firestore";
+import { getStorage, ref } from 'firebase/storage';
 import Modal from 'react-modal';
 import { app } from '../../firebase';
 import NaviagtionComponent from '../../components/navigation/navigationComponent';
@@ -19,6 +20,8 @@ function DashboardScreen() {
 
   const db = getFirestore(app);
   const productCollectionRef = collection(db, "products");
+  const storage = getStorage();
+
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -40,6 +43,7 @@ function DashboardScreen() {
         productName: doc.data().product_name,
         subTitle: doc.data().sub_title,
         description: doc.data().description,
+        imageUrl: doc.data().image_url,
       });
     });
     setProductList(products);
@@ -50,24 +54,26 @@ function DashboardScreen() {
     getProducts();
   }
 
-  const updateProduct = async (values) => {
+  const updateProduct = async (values, file) => {
     const { id, productName, subTitle, description } = values;
     let productDetail = {
       product_name: productName,
       sub_title: subTitle,
       description: description,
+      image_url: file ? file : '',
     }
     await updateDoc(doc(db, 'products', id), productDetail);
     getProducts();
     toggleModal();
   }
 
-  const addProduct = async (values) => {
+  const addProduct = async (values, file) => {
     const { productName, subTitle, description } = values;
     let productDetail = {
       product_name: productName,
       sub_title: subTitle,
       description: description,
+      image_url: file ? file : '',
     }
     let response = await addDoc(productCollectionRef, productDetail);
     if (response.id) {
@@ -126,15 +132,16 @@ function DashboardScreen() {
         </div>
       </div>
 
-      <Modal
-        isOpen={modalIsOpen}
-        onRequestClose={() => toggleModal(false)}>
-        <ProductFormComponent
-          formValues={formValues}
-          toggleModal={(status) => toggleModal(status)}
-          addProduct={(values) => addProduct(values)}
-          updateProduct={(values) => updateProduct(values)} />
-      </Modal>
+      {modalIsOpen &&
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={() => toggleModal(false)}>
+          <ProductFormComponent
+            formValues={formValues}
+            toggleModal={(status) => toggleModal(status)}
+            addProduct={(values, file) => addProduct(values, file)}
+            updateProduct={(values, file) => updateProduct(values, file)} />
+        </Modal>}
     </>
   );
 }

@@ -60,7 +60,7 @@ function LoginScreen() {
 
                     <h5>Please login to your account</h5>
                     {showLoginErrorMessage &&
-                      <div class="alert alert-danger" role="alert">
+                      <div className="alert alert-danger" role="alert">
                         Invalid email address or password
                       </div>}
                     <LoginFormComponent handleLogin={(values) => handleLogin(values)} />

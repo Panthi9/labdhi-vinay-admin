@@ -6,13 +6,19 @@ function ProductCardComponent(props) {
     return (
         <>
             <div className="card" key={product.id}>
-                <div className='card-image' style={{height: 200, background:'grey'}} />
+                <div className='card-image' style={{height: 200, background:'grey'}} >
+                    {product.imageUrl && 
+                        <img 
+                            src={product.imageUrl} 
+                            height="200" 
+                            width="100%"/>}
+                </div>
                 <div className="card-body">
                     <h5 className="card-title text-truncate">{product.productName}</h5>
                     <p className="card-text text-truncate">{product.subTitle}</p>
                     <p className='word'>{product.description}</p>
                 </div>
-                <div class="card-footer text-muted">
+                <div className="card-footer text-muted">
                     <button 
                         className='btn btn-delete mx-2' 
                         onClick={() => deleteProduct()}>

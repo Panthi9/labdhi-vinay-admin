@@ -1,17 +1,31 @@
+import { useState, useEffect } from 'react';
 import { Formik } from 'formik';
-import * as yup from 'yup'
+import * as yup from 'yup';
+import { useFileUpload } from 'use-file-upload';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { app } from '../../firebase';
 
 function ProductFormComponent(props) {
     const { formValues, toggleModal, addProduct, updateProduct } = props;
 
+    const [file, selectFile] = useFileUpload();
+    const [filePath, setFilePath] = useState(null);
+
+    const storage = getStorage(app);
+
+    useEffect(() => {
+        setFilePath(null);
+    }, []);
+
     const onSubmitHandler = (values) => {
         if (values.id) {
-            updateProduct(values);
+            updateProduct(values, filePath);
         } else {
             delete values.id;
-            addProduct(values);
+            addProduct(values, filePath);
         }
     }
+
 
     return (
         <Formik
@@ -50,15 +64,15 @@ function ProductFormComponent(props) {
                                     </div>
                                     <div className="col">
                                         <div className="form-group mt-2">
-                                            <label> Sub Title </label>
+                                            <label> Price </label>
                                             <input
                                                 type="text"
-                                                className={`form-control ${touched.subTitle  ? errors.subTitle ? 'is-invalid' : 'is-valid' : ''}`}
-                                                placeholder="Sub Title"
-                                                onChange={handleChange('subTitle')}
-                                                onBlur={handleBlur('subTitle')}
-                                                value={values.subTitle} />
-                                            {(touched.subTitle && errors.subTitle) && <small className='text-danger'> {errors.subTitle} </small>}
+                                                className={`form-control ${touched.price ? errors.price ? 'is-invalid' : 'is-valid' : ''}`}
+                                                placeholder="Price"
+                                                onChange={handleChange('price')}
+                                                onBlur={handleBlur('price')}
+                                                value={values.price} />
+                                            {(touched.price && errors.price) && <small className='text-danger'> {errors.price} </small>}
                                         </div>
                                     </div>
                                 </div>
@@ -68,13 +82,36 @@ function ProductFormComponent(props) {
                                             <label> Description </label>
                                             <textarea
                                                 rows={5}
-                                                className={`form-control ${touched.description  ? errors.description ? 'is-invalid' : 'is-valid' : ''}`}
+                                                className={`form-control ${touched.description ? errors.description ? 'is-invalid' : 'is-valid' : ''}`}
                                                 placeholder="Description"
                                                 onChange={handleChange('description')}
                                                 onBlur={handleBlur('description')}
                                                 value={values.description} />
                                             {(touched.description && errors.description) && <small className='text-danger'> {errors.description} </small>}
                                         </div>
+                                    </div>
+                                </div>
+
+                                <div className="row justify-content-between align-items-center mt-2">
+                                    <div className="col">
+                                        <button
+                                            className='btn btn-primary'
+                                            onClick={() => {
+                                                selectFile({ accept: 'image/*' }, ({ source, name, size, file }) => {
+                                                    const storageRef = ref(storage, `/${name}`);
+                                                    const uploadTask = uploadBytes(storageRef, source);
+
+                                                    getDownloadURL(uploadTask.snapshot.ref)
+                                                        .then((url) => {
+                                                            setFilePath(url);
+                                                        })
+                                                        .catch((error) => {
+                                                            setFilePath(null);
+                                                        });
+                                                })
+                                            }}>
+                                            Click to Upload
+                                        </button>
                                     </div>
                                 </div>
 
@@ -101,9 +138,9 @@ const productValidationSchema = yup.object().shape({
     productName: yup
         .string()
         .required('Product name is required'),
-    subTitle: yup
-        .string()
-        .required('Subtitle is required'),
+    price: yup
+        .number()
+        .required('Price is required'),
     description: yup
         .string()
         .required('Product description is Required'),
