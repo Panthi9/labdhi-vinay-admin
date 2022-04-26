@@ -41,7 +41,7 @@ function DashboardScreen() {
       products.push({
         id: doc.id,
         productName: doc.data().product_name,
-        subTitle: doc.data().sub_title,
+        price: doc.data().price,
         description: doc.data().description,
         imageUrl: doc.data().image_url,
       });
@@ -55,10 +55,10 @@ function DashboardScreen() {
   }
 
   const updateProduct = async (values, file) => {
-    const { id, productName, subTitle, description } = values;
+    const { id, productName, price, description } = values;
     let productDetail = {
       product_name: productName,
-      sub_title: subTitle,
+      price: price,
       description: description,
       image_url: file ? file : '',
     }
@@ -68,10 +68,10 @@ function DashboardScreen() {
   }
 
   const addProduct = async (values, file) => {
-    const { productName, subTitle, description } = values;
+    const { productName, price, description } = values;
     let productDetail = {
       product_name: productName,
-      sub_title: subTitle,
+      price: price,
       description: description,
       image_url: file ? file : '',
     }
@@ -87,13 +87,13 @@ function DashboardScreen() {
   const toggleModal = (status) => setIsOpen(status);
 
   const setFormValueForPostRequest = () =>
-    setFormValues({ id: '', productName: '', subTitle: '', description: '' });
+    setFormValues({ id: '', productName: '', price: '', description: '' });
 
   const setFormValueForPutRequest = (product) =>
     setFormValues({
       id: product.id,
       productName: product.productName,
-      subTitle: product.subTitle,
+      price: product.price,
       description: product.description,
     });
 

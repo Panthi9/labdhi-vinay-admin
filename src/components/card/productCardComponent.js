@@ -15,7 +15,7 @@ function ProductCardComponent(props) {
                 </div>
                 <div className="card-body">
                     <h5 className="card-title text-truncate">{product.productName}</h5>
-                    <p className="card-text text-truncate">{product.subTitle}</p>
+                    <p className="card-text text-truncate">{`\u00A3 ${product.price}`}</p>
                     <p className='word'>{product.description}</p>
                 </div>
                 <div className="card-footer text-muted">

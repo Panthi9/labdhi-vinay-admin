@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from "react-router-dom";
 import moment from 'moment';
-import { getFirestore, collection, getDocs, getDoc, doc, } from "firebase/firestore";
+import { getFirestore, collection, getDocs, getDoc, doc, updateDoc} from "firebase/firestore";
 import { app } from '../../firebase';
 import NaviagtionComponent from '../../components/navigation/navigationComponent';
 
@@ -22,6 +22,23 @@ function OrderScreen() {
             navigate("/");
         }
     }, []);
+
+    const onOrderDiscardHandler = async (id) => {
+        let orderDetail = {
+            status: 'DISCARD'
+        }
+        await updateDoc(doc(db, 'orders', id), orderDetail);
+        getOrders();
+    }
+
+    const onOrderDeliveredHandler = async (id) => {
+        let orderDetail = {
+            status: 'DELIVERED'
+        }
+        await updateDoc(doc(db, 'orders', id), orderDetail);
+        getOrders();
+    }
+
 
     const getOrders = async () => {
         let orders = [];
@@ -48,6 +65,7 @@ function OrderScreen() {
                 orderDocCollectionWithProductDetail.push({
                     ...order,
                     productName: docSnap.data().product_name,
+                    price: docSnap.data().price,
                 })
             } catch (error) { }
         }
@@ -85,7 +103,7 @@ function OrderScreen() {
                                 <th scope="col" className='text-white'>Customer Name</th>
                                 <th scope="col" className='text-white'>Address</th>
                                 <th scope="col" className='text-white'>Product Name</th>
-                                <th scope="col" className='text-white'>Amount</th>
+                                <th scope="col" className='text-white'>Price</th>
                                 <th scope="col" className='text-white'>Order Date</th>
                                 <th scope="col" className='text-white'>Action</th>
                             </tr>
@@ -99,15 +117,16 @@ function OrderScreen() {
                                         <td>{order.userName}</td>
                                         <td>{order.address}</td>
                                         <td>{order.productName}</td>
-                                        <td>{order.amount}</td>
+                                        <td>{`\u00A3 ${order.price}`}</td>
                                         <td>{order.date}</td>
                                         <td>
-                                            <button className='btn btn-danger mx-2'>
+                                            {order.status.toUpperCase() == 'PLACED' && <button className='btn btn-danger mx-2' onClick={() => onOrderDiscardHandler(order.id)}>
                                                 {'Discard'}
-                                            </button>
-                                            <button className='btn btn-success mx-2'>
-                                                Delivered
-                                            </button>
+                                            </button>}
+                                            {order.status.toUpperCase() == 'PLACED' &&
+                                            <button className='btn btn-success mx-2' onClick={() => onOrderDeliveredHandler(order.id)}>
+                                                {'Delivered'}
+                                            </button>}
                                         </td>
                                     </tr>
                                 )
