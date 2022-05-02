@@ -55,9 +55,9 @@ function OrderScreen() {
                 productId: orderDoc.data().product_id,
                 userId: orderDoc.data().user_id,
                 address:  orderDoc.data().address ? orderDoc.data().address: '',
-                userName: orderDoc.data().userName ? orderDoc.data().userName : '',
+                userName: orderDoc.data().user_name ? orderDoc.data().user_name : '',
                 phonenumber:  orderDoc.data().phonenumber ? orderDoc.data().phonenumber: '',
-                postCode:  orderDoc.data().postCode ? orderDoc.data().postCode: '',
+                postCode:  orderDoc.data().post_code ? orderDoc.data().post_code: '',
             });
         });
 
