@@ -54,6 +54,9 @@ function OrderScreen() {
                 status: orderDoc.data().status,
                 productId: orderDoc.data().product_id,
                 userId: orderDoc.data().user_id,
+                address:  orderDoc.data().address ? orderDoc.data().address: '',
+                userName: orderDoc.data().userName ? orderDoc.data().userName : '',
+                phonenumber:  orderDoc.data().phonenumber ? orderDoc.data().phonenumber: '',
             });
         });
 
@@ -71,17 +74,24 @@ function OrderScreen() {
         }
 
         for (const order of orderDocCollectionWithProductDetail) {
-            const userQuerySnapshot = doc(db, 'users', order.userId);
-            const docSnap = await getDoc(userQuerySnapshot);
-
-            try {
+            if(order.userId){
+                const userQuerySnapshot = doc(db, 'users', order.userId);
+                const docSnap = await getDoc(userQuerySnapshot);
+                try {
+                    orderDocCollectionWithUserDetail = {
+                        ...order,
+                        userName: `${docSnap.data().first_name} ${docSnap.data().last_name}`,
+                        address: docSnap.data().address,
+                        phonenumber: docSnap.data().phonenumber,
+                    }
+                    orders.push(orderDocCollectionWithUserDetail);
+                } catch (error) { }
+            }else{
                 orderDocCollectionWithUserDetail = {
                     ...order,
-                    userName: `${docSnap.data().first_name} ${docSnap.data().last_name}`,
-                    address: docSnap.data().address,
                 }
                 orders.push(orderDocCollectionWithUserDetail);
-            } catch (error) { }
+            }
         }
         setOrderList(orders);
     }
@@ -103,7 +113,8 @@ function OrderScreen() {
                                 <th scope="col" className='text-white'>Customer Name</th>
                                 <th scope="col" className='text-white'>Address</th>
                                 <th scope="col" className='text-white'>Product Name</th>
-                                <th scope="col" className='text-white'>Price</th>
+                                <th scope="col" className='text-white'>Phone Number</th>
+                                <th scope="col" className='text-white'>Amount</th>
                                 <th scope="col" className='text-white'>Order Date</th>
                                 <th scope="col" className='text-white'>Action</th>
                             </tr>
@@ -117,6 +128,7 @@ function OrderScreen() {
                                         <td>{order.userName}</td>
                                         <td>{order.address}</td>
                                         <td>{order.productName}</td>
+                                        <td>{order.phonenumber}</td>
                                         <td>{`\u00A3 ${order.price}`}</td>
                                         <td>{order.date}</td>
                                         <td>

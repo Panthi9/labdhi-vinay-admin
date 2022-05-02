@@ -75,6 +75,19 @@ function ProductFormComponent(props) {
                                             {(touched.price && errors.price) && <small className='text-danger'> {errors.price} </small>}
                                         </div>
                                     </div>
+                                    <div className="col">
+                                        <div className="form-group mt-2">
+                                            <label> Weight </label>
+                                            <input
+                                                type="text"
+                                                className={`form-control ${touched.weight ? errors.weight ? 'is-invalid' : 'is-valid' : ''}`}
+                                                placeholder="Weight"
+                                                onChange={handleChange('weight')}
+                                                onBlur={handleBlur('weight')}
+                                                value={values.weight} />
+                                            {(touched.weight && errors.weight) && <small className='text-danger'> {errors.weight} </small>}
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="row justify-content-between align-items-center mt-2">
                                     <div className="col">
@@ -141,6 +154,9 @@ const productValidationSchema = yup.object().shape({
     price: yup
         .number()
         .required('Price is required'),
+    weight: yup
+        .string()
+        .required('Weight is required'),
     description: yup
         .string()
         .required('Product description is Required'),

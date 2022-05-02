@@ -43,6 +43,7 @@ function DashboardScreen() {
         productName: doc.data().product_name,
         price: doc.data().price,
         description: doc.data().description,
+        weight: doc.data().weight,
         imageUrl: doc.data().image_url,
       });
     });
@@ -55,11 +56,12 @@ function DashboardScreen() {
   }
 
   const updateProduct = async (values, file) => {
-    const { id, productName, price, description } = values;
+    const { id, productName, price, description, weight } = values;
     let productDetail = {
       product_name: productName,
       price: price,
       description: description,
+      weight: weight,
       image_url: file ? file : '',
     }
     await updateDoc(doc(db, 'products', id), productDetail);
@@ -87,7 +89,7 @@ function DashboardScreen() {
   const toggleModal = (status) => setIsOpen(status);
 
   const setFormValueForPostRequest = () =>
-    setFormValues({ id: '', productName: '', price: '', description: '' });
+    setFormValues({ id: '', productName: '', price: '', description: '', weight: '', });
 
   const setFormValueForPutRequest = (product) =>
     setFormValues({
@@ -95,6 +97,7 @@ function DashboardScreen() {
       productName: product.productName,
       price: product.price,
       description: product.description,
+      weight: product.weight,
     });
 
 
