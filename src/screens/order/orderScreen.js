@@ -53,7 +53,7 @@ function OrderScreen() {
                 date: orderDoc.data().date ? moment(new Date(orderDoc.data().date.seconds*1000)).format('DD-MM-YYYY')  : '-',
                 status: orderDoc.data().status,
                 productId: orderDoc.data().product_id,
-                userId: orderDoc.data().user_id,
+                userId: orderDoc.data().user_id ? orderDoc.data().user_id : '',
                 address:  orderDoc.data().address ? orderDoc.data().address: '',
                 userName: orderDoc.data().user_name ? orderDoc.data().user_name : '',
                 phonenumber:  orderDoc.data().phonenumber ? orderDoc.data().phonenumber: '',
@@ -84,7 +84,7 @@ function OrderScreen() {
                         userName: `${docSnap.data().first_name} ${docSnap.data().last_name}`,
                         address: docSnap.data().address ? docSnap.data().address : '',
                         phonenumber: docSnap.data().phonenumber ? docSnap.data().phonenumber : '',
-                        postCode:  docSnap.data().postCode ? docSnap.data().postCode : '',
+                        postCode:  docSnap.data().postal_code ? docSnap.data().postal_code : '',
                     }
                     orders.push(orderDocCollectionWithUserDetail);
                 } catch (error) { }
