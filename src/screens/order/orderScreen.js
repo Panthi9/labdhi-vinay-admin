@@ -57,6 +57,7 @@ function OrderScreen() {
                 address:  orderDoc.data().address ? orderDoc.data().address: '',
                 userName: orderDoc.data().userName ? orderDoc.data().userName : '',
                 phonenumber:  orderDoc.data().phonenumber ? orderDoc.data().phonenumber: '',
+                postCode:  orderDoc.data().postCode ? orderDoc.data().postCode: '',
             });
         });
 
@@ -81,8 +82,9 @@ function OrderScreen() {
                     orderDocCollectionWithUserDetail = {
                         ...order,
                         userName: `${docSnap.data().first_name} ${docSnap.data().last_name}`,
-                        address: docSnap.data().address,
-                        phonenumber: docSnap.data().phonenumber,
+                        address: docSnap.data().address ? docSnap.data().address : '',
+                        phonenumber: docSnap.data().phonenumber ? docSnap.data().phonenumber : '',
+                        postCode:  docSnap.data().postCode ? docSnap.data().postCode : '',
                     }
                     orders.push(orderDocCollectionWithUserDetail);
                 } catch (error) { }
@@ -111,10 +113,11 @@ function OrderScreen() {
                             <tr>
                                 <th scope="col" className='text-white'>Order Number</th>
                                 <th scope="col" className='text-white'>Customer Name</th>
-                                <th scope="col" className='text-white'>Address</th>
                                 <th scope="col" className='text-white'>Product Name</th>
                                 <th scope="col" className='text-white'>Phone Number</th>
                                 <th scope="col" className='text-white'>Amount</th>
+                                <th scope="col" className='text-white'>Address</th>
+                                <th scope="col" className='text-white'>Post Code</th>
                                 <th scope="col" className='text-white'>Order Date</th>
                                 <th scope="col" className='text-white'>Action</th>
                             </tr>
@@ -126,10 +129,11 @@ function OrderScreen() {
                                     <tr key={index}>
                                         <td>{order.id}</td>
                                         <td>{order.userName}</td>
-                                        <td>{order.address}</td>
                                         <td>{order.productName}</td>
                                         <td>{order.phonenumber}</td>
                                         <td>{`\u00A3 ${order.price}`}</td>
+                                        <td>{order.address}</td>
+                                        <td>{order.postCode}</td>
                                         <td>{order.date}</td>
                                         <td>
                                             {order.status.toUpperCase() == 'PLACED' && <button className='btn btn-danger mx-2' onClick={() => onOrderDiscardHandler(order.id)}>
